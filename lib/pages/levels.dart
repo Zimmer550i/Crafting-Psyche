@@ -65,20 +65,23 @@ class Levels extends StatelessWidget {
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Buttons(
                     text: "Back",
                     size: 4,
+                    func: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
-                  Buttons(
+                  const Buttons(
                     text: "Help",
                     size: 4,
                   ),

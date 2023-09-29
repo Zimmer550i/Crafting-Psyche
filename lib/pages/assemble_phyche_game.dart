@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 
-class AssemblePhycheGame extends StatelessWidget {
+class AssemblePhycheGame extends StatefulWidget {
   const AssemblePhycheGame({super.key});
 
   @override
+  State<AssemblePhycheGame> createState() => _AssemblePhycheGameState();
+}
+
+class _AssemblePhycheGameState extends State<AssemblePhycheGame> {
+  double size = 300;
+  List<bool> partsShown = List.filled(5, false);
+  late List<Widget> partsList;
+
+  @override
+  void initState() {
+    super.initState();
+    initList();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<bool> partsShown = List.filled(5, false);
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: Stack(
         children: [
@@ -22,41 +35,38 @@ class AssemblePhycheGame extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              DraggableParts(
-                partsShown: partsShown,
-              ),
-              const Text(
-                "Puzzle your way to unlock the Psyche asteroid's view in space",
-                style: TextStyle(
-                  fontFamily: "Arbutus",
-                  fontSize: 20,
-                  color: Color(0xffF7DE00),
-                ),
-              ),
-              Center(
-                child: Transform.scale(
-                  scale: 1,
-                  // scale: (w/300)*1.2,
-                  child: Assembly(
-                    partsShown: partsShown,
+              draggables(),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 50),
+                child: Text(
+                  "Puzzle your way to unlock the Psyche asteroid's view in space",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: "Arbutus",
+                    fontSize: 20,
+                    color: Color(0xffF7DE00),
                   ),
                 ),
               ),
+              assembly(),
             ],
           ),
         ],
       ),
     );
   }
-}
 
-class DraggableParts extends StatelessWidget {
-  final double size;
-  final List<bool> partsShown;
-  const DraggableParts({super.key, this.size = 300, required this.partsShown});
+  Widget assembly() {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        children: partsList
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget draggables() {
     return Container(
       height: size,
       width: size,
@@ -67,7 +77,8 @@ class DraggableParts extends StatelessWidget {
             visible: !partsShown[0],
             child: Positioned(
               child: Draggable(
-                hitTestBehavior: HitTestBehavior.deferToChild,
+                onDragStarted: () => rearrange(1),
+                onDragCompleted: () => initList(),
                 data: "part1",
                 feedback: Image.asset("assets/images/phyche/part (1).png"),
                 child: Image.asset("assets/images/phyche/part (1).png"),
@@ -79,7 +90,8 @@ class DraggableParts extends StatelessWidget {
             child: Positioned(
               left: 120,
               child: Draggable(
-                hitTestBehavior: HitTestBehavior.deferToChild,
+                onDragStarted: () => rearrange(2),
+                onDragCompleted: () => initList(),
                 data: "part2",
                 feedback: Image.asset("assets/images/phyche/part (2).png"),
                 child: Image.asset("assets/images/phyche/part (2).png"),
@@ -91,7 +103,8 @@ class DraggableParts extends StatelessWidget {
             child: Positioned(
               top: 150,
               child: Draggable(
-                hitTestBehavior: HitTestBehavior.deferToChild,
+                onDragStarted: () => rearrange(3),
+                onDragCompleted: () => initList(),
                 data: "part3",
                 feedback: Image.asset("assets/images/phyche/part (3).png"),
                 child: Image.asset("assets/images/phyche/part (3).png"),
@@ -104,7 +117,8 @@ class DraggableParts extends StatelessWidget {
               top: 150,
               left: 100,
               child: Draggable(
-                hitTestBehavior: HitTestBehavior.deferToChild,
+                onDragStarted: () => rearrange(4),
+                onDragCompleted: () => initList(),
                 data: "part4",
                 feedback: Image.asset("assets/images/phyche/part (4).png"),
                 child: Image.asset("assets/images/phyche/part (4).png"),
@@ -117,7 +131,8 @@ class DraggableParts extends StatelessWidget {
               top: 10,
               right: 0,
               child: Draggable(
-                hitTestBehavior: HitTestBehavior.deferToChild,
+                onDragStarted: () => rearrange(5),
+                onDragCompleted: () => initList(),
                 data: "part5",
                 feedback: Image.asset("assets/images/phyche/part (5).png"),
                 child: Image.asset("assets/images/phyche/part (5).png"),
@@ -128,163 +143,138 @@ class DraggableParts extends StatelessWidget {
       ),
     );
   }
-}
 
-class Assembly extends StatefulWidget {
-  final double size;
-  final List<bool> partsShown;
-  const Assembly({Key? key, this.size = 300.0, required this.partsShown})
-      : super(key: key);
+  void rearrange(int n) {
+    var temp = partsList.removeAt(n - 1);
+    setState(() {
+      partsList.add(temp);
+    });
+  }
 
-  @override
-  State<Assembly> createState() => _AssemblyState();
-}
-
-class _AssemblyState extends State<Assembly> {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.size,
-      height: widget.size,
-      child: Stack(
-        children: [
-          //Draggable Logics
-
-          Positioned(
-            left: widget.size * 0.05,
-            top: widget.size * 0.23,
-            child: DragTarget(
-              hitTestBehavior: HitTestBehavior.translucent,
-              onAccept: (data) {
-                if (data == "part1") {
-                  setState(() {
-                    widget.partsShown[0] = !widget.partsShown[0];
-                  });
-                }
-              },
-              builder: (context, candidateData, rejectedData) {
-                return Transform.rotate(
-                  angle: 5.7,
-                  child: Opacity(
-                    opacity: widget.partsShown[0] ? 1 : 0,
-                    child: Image.asset(
-                      "assets/images/phyche/part (1).png",
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          Positioned(
-            left: widget.size * 0.045,
-            top: widget.size * 0.09,
-            child: DragTarget(
-              hitTestBehavior: HitTestBehavior.translucent,
-              onAccept: (data) {
-                if (data == "part2") {
-                  setState(() {
-                    widget.partsShown[1] = !widget.partsShown[1];
-                  });
-                }
-              },
-              builder: (context, candidateData, rejectedData) =>
-                  Transform.rotate(
-                angle: 3.85,
-                child: Opacity(
-                  opacity: widget.partsShown[0] ? 1 : 0,
-                  child: Image.asset(
-                    "assets/images/phyche/part (2).png",
-                    scale: 0.95,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            right: widget.size * 0.22,
-            top: widget.size * 0.12,
-            child: DragTarget(
-              hitTestBehavior: HitTestBehavior.translucent,
-              onAccept: (data) {
-                if (data == "part3") {
-                  setState(() {
-                    widget.partsShown[2] = !widget.partsShown[2];
-                  });
-                }
-              },
-              builder: (context, candidateData, rejectedData) =>
-                  Transform.rotate(
-                angle: 4.73,
-                child: Opacity(
-                  opacity: widget.partsShown[2] ? 1 : 0,
-                  child: Image.asset(
-                    "assets/images/phyche/part (3).png",
-                    scale: 0.95,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            right: widget.size * 0.05,
-            top: widget.size * 0.25,
-            child: DragTarget(
-              hitTestBehavior: HitTestBehavior.translucent,
-              onAccept: (data) {
-                if (data == "part4") {
-                  setState(() {
-                    widget.partsShown[3] = !widget.partsShown[3];
-                  });
-                }
-              },
-              builder: (context, candidateData, rejectedData) =>
-                  Transform.rotate(
-                angle: 1.85,
-                child: Opacity(
-                  opacity: widget.partsShown[3] ? 1 : 0,
-                  child: Image.asset(
-                    "assets/images/phyche/part (4).png",
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            right: widget.size * 0.33,
-            bottom: widget.size * -0.02,
-            child: Transform.rotate(
-              angle: 4.62,
+  void initList() {
+    partsList = [
+      Positioned(
+        left: size * 0.05,
+        top: size * 0.23,
+        child: DragTarget(
+          onAccept: (data) {
+            if (data == "part1") {
+              setState(() {
+                partsShown[0] = !partsShown[0];
+              });
+            }
+          },
+          builder: (context, candidateData, rejectedData) {
+            return Transform.rotate(
+              angle: 5.7,
               child: Opacity(
-                opacity: widget.partsShown[4] ? 1 : 0,
-                child: DragTarget(
-                  hitTestBehavior: HitTestBehavior.translucent,
-                  onAccept: (data) {
-                    if (data == "part5") {
-                      setState(() {
-                        widget.partsShown[4] = !widget.partsShown[4];
-                      });
-                    }
-                  },
-                  builder: (context, candidateData, rejectedData) =>
-                      Image.asset(
-                    "assets/images/phyche/part (5).png",
-                  ),
+                opacity: partsShown[0] ? 1 : 0,
+                child: Image.asset(
+                  "assets/images/phyche/part (1).png",
                 ),
+              ),
+            );
+          },
+        ),
+      ),
+      Positioned(
+        left: size * 0.045,
+        top: size * 0.09,
+        child: DragTarget(
+          onAccept: (data) {
+            if (data == "part2") {
+              setState(() {
+                partsShown[1] = !partsShown[1];
+              });
+            }
+          },
+          builder: (context, candidateData, rejectedData) => Transform.rotate(
+            angle: 3.85,
+            child: Opacity(
+              opacity: partsShown[1] ? 1 : 0,
+              child: Image.asset(
+                "assets/images/phyche/part (2).png",
+                scale: 0.95,
               ),
             ),
           ),
-
-          Align(
-            alignment: Alignment.center,
-            child: Image.asset(
-              "assets/images/phyche/outline.png",
-              width: widget.size * 0.8,
-              height: widget.size * 0.8,
+        ),
+      ),
+      Positioned(
+        right: size * 0.22,
+        top: size * 0.12,
+        child: DragTarget(
+          onAccept: (data) {
+            if (data == "part3") {
+              setState(() {
+                partsShown[2] = !partsShown[2];
+              });
+            }
+          },
+          builder: (context, candidateData, rejectedData) => Transform.rotate(
+            angle: 4.73,
+            child: Opacity(
+              opacity: partsShown[2] ? 1 : 0,
+              child: Image.asset(
+                "assets/images/phyche/part (3).png",
+                scale: 0.95,
+              ),
             ),
           ),
-        ],
+        ),
       ),
-    );
+      Positioned(
+        right: size * 0.05,
+        top: size * 0.25,
+        child: DragTarget(
+          onAccept: (data) {
+            if (data == "part4") {
+              setState(() {
+                partsShown[3] = !partsShown[3];
+              });
+            }
+          },
+          builder: (context, candidateData, rejectedData) => Transform.rotate(
+            angle: 1.85,
+            child: Opacity(
+              opacity: partsShown[3] ? 1 : 0,
+              child: Image.asset(
+                "assets/images/phyche/part (4).png",
+              ),
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        right: size * 0.33,
+        bottom: size * -0.02,
+        child: DragTarget(
+          onAccept: (data) {
+            if (data == "part5") {
+              setState(() {
+                partsShown[4] = !partsShown[4];
+              });
+            }
+          },
+          builder: (context, candidateData, rejectedData) => Transform.rotate(
+            angle: 4.62,
+            child: Opacity(
+              opacity: partsShown[4] ? 1 : 0,
+              child: Image.asset(
+                "assets/images/phyche/part (5).png",
+              ),
+            ),
+          ),
+        ),
+      ),
+      Align(
+        alignment: Alignment.center,
+        child: Image.asset(
+          "assets/images/phyche/outline.png",
+          width: size * 0.8,
+          height: size * 0.8,
+        ),
+      ),
+    ];
   }
 }
