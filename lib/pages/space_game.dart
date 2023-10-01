@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -11,17 +10,16 @@ import 'package:mission_phyche_asteroid/models/level.dart';
 import 'package:mission_phyche_asteroid/models/player.dart';
 
 class SpaceGame extends FlameGame with HasCollisionDetection, PanDetector {
-  late Random _random;
   late Player player;
   final Level level;
   late TextComponent distance;
+  bool increased = false;
 
   SpaceGame({required this.level});
 
   @override
   FutureOr<void> onLoad() async {
     await super.onLoad();
-    _random = Random();
     // debugMode = true;
     ParallaxComponent parallaxComponent = await loadParallaxComponent(
       [
@@ -38,23 +36,21 @@ class SpaceGame extends FlameGame with HasCollisionDetection, PanDetector {
     addAsteroids();
     player = Player();
     add(player);
-    // TextComponent time = TextComponent();
 
     distance = TextComponent(
-      text: "Distance: ${level.time.toInt()}",
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          fontFamily: "Arbutus",
-          fontSize: 20,
-          color: Color(0xffF7DE00),
+        text: "Distance: ${level.time.toInt()}",
+        textRenderer: TextPaint(
+          style: const TextStyle(
+            fontFamily: "Arbutus",
+            fontSize: 20,
+            color: Color(0xffF7DE00),
+          ),
         ),
-      ),
-      anchor: Anchor.topRight,
-      position: Vector2(size.x, 40),
-    );
+        anchor: Anchor.topRight,
+        position: Vector2(size.x, 40),
+        priority: 1);
 
     add(distance);
-    
   }
 
   @override
@@ -63,8 +59,16 @@ class SpaceGame extends FlameGame with HasCollisionDetection, PanDetector {
     level.time += level.isEndless ? 1 * dt : -1 * dt;
     distance.text = "Distance: ${level.time.toInt()}";
 
-    if (level.time<1 && !level.isEndless) {
+    if (level.time < 1 && !level.isEndless) {
       overlays.add('pause');
+    }
+
+    if (level.isEndless && !increased && level.time.toInt() % 50 == 0) {
+      level.occurence -= 0.1;
+      level.speed += 0.1;
+      increased = true;
+    } else if (level.time.toInt() % 50 == 1) {
+      increased = false;
     }
   }
 
@@ -86,10 +90,7 @@ class SpaceGame extends FlameGame with HasCollisionDetection, PanDetector {
         Duration(milliseconds: (1000 * level.occurence).toInt()),
       );
       add(Asteroid(
-        xAxis: _random.nextInt(size.x.toInt()).toDouble(),
-        yAxis: _random.nextInt(50).toDouble() - 100.0,
-        velocity: _random.nextInt(100).toDouble() + level.speed,
-        spriteSize: _random.nextInt(50) + 70.0,
+        velocity: level.speed,
         isJunk: level.isJunk,
       ));
     }

@@ -1,7 +1,7 @@
 class Level {
   final String name;
-  final double speed;
-  final double occurence;
+  double speed;
+  double occurence;
   double time;
   bool isJunk;
   bool isEndless;
