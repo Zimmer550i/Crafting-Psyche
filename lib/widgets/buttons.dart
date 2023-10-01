@@ -19,7 +19,7 @@ class Buttons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: func,
+      onTap: isGrayed ? null : func,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size * 6),
         child: ColorFiltered(
@@ -64,12 +64,15 @@ class Buttons extends StatelessWidget {
                 ],
               ),
               child: Center(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    fontFamily: "Arbutus",
-                    fontSize: size * 5,
-                    color: Colors.white,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: Text(
+                    text,
+                    style: const TextStyle(
+                      fontFamily: "Arbutus",
+                      fontSize: 999,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

@@ -40,7 +40,7 @@ class Splash extends StatelessWidget {
               child: Transform.rotate(
                 angle: -45,
                 child: Image.asset(
-                  "assets/images/ship_1.gif",
+                  "assets/images/ship.gif",
                 )
                     .animate(
                       onPlay: (controller) => controller.repeat(reverse: true),
