@@ -1,2 +1,1 @@
-double h = 0;
-double w = 0;
+late List<String> progress;

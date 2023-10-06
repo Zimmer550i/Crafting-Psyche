@@ -6,10 +6,11 @@ class Level {
   bool isJunk;
   bool isEndless;
 
-  Level(this.name,
-      {required this.occurence,
-      required this.speed,
-      required this.time,
-      this.isJunk = false,
-      this.isEndless = false});
+  Level(
+    this.name, {
+    required this.occurence,
+    required this.speed,
+    required this.time,
+    this.isJunk = false,
+    this.isEndless = false});
 }

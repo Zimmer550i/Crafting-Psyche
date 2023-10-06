@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mission_phyche_asteroid/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AssemblePhycheGame extends StatefulWidget {
   const AssemblePhycheGame({super.key});
@@ -18,10 +20,25 @@ class _AssemblePhycheGameState extends State<AssemblePhycheGame> {
     initList();
   }
 
+  Future<void> _saveProgress() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    await _prefs.setStringList('progress', progress);
+  }
+
+  void _checkCompleted() {
+    if (partsShown.every((element) => element == true)) {
+      progress[4] = 'true';
+      _saveProgress();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
+
+    _checkCompleted();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -60,9 +77,7 @@ class _AssemblePhycheGameState extends State<AssemblePhycheGame> {
     return SizedBox(
       width: size,
       height: size,
-      child: Stack(
-        children: partsList
-      ),
+      child: Stack(children: partsList),
     );
   }
 

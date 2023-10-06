@@ -5,9 +5,12 @@ import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
+import 'package:mission_phyche_asteroid/main.dart';
 import 'package:mission_phyche_asteroid/models/asteroid.dart';
 import 'package:mission_phyche_asteroid/models/level.dart';
 import 'package:mission_phyche_asteroid/models/player.dart';
+import 'package:mission_phyche_asteroid/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SpaceGame extends FlameGame with HasCollisionDetection, PanDetector {
   late Player player;
@@ -53,6 +56,11 @@ class SpaceGame extends FlameGame with HasCollisionDetection, PanDetector {
     add(distance);
   }
 
+  Future<void> _saveProgress() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    await _prefs.setStringList('progress', progress);
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
@@ -61,6 +69,14 @@ class SpaceGame extends FlameGame with HasCollisionDetection, PanDetector {
 
     if (level.time < 1 && !level.isEndless) {
       overlays.add('pause');
+      if (level.name == 'level1') {
+        progress[1] = 'true';
+      }else if (level.name == 'level2') {
+        progress[2] = 'true';
+      }else if (level.name == 'level3') {
+        progress[3] = 'true';
+      }
+      _saveProgress();
     }
 
     if (level.isEndless && !increased && level.time.toInt() % 50 == 0) {

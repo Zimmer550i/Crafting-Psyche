@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:mission_phyche_asteroid/models/level.dart';
 import 'package:mission_phyche_asteroid/pages/assemble_phyche_game.dart';
 import 'package:mission_phyche_asteroid/pages/loading_screen_1.dart';
+import 'package:mission_phyche_asteroid/utils/constants.dart';
 import 'package:mission_phyche_asteroid/widgets/buttons.dart';
 
-class Levels extends StatelessWidget {
+class Levels extends StatefulWidget {
   const Levels({super.key});
 
+  @override
+  State<Levels> createState() => _LevelsState();
+}
+
+class _LevelsState extends State<Levels> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +36,7 @@ class Levels extends StatelessWidget {
                   levels(
                     name: "Road to Mars",
                     title: "Level 1",
+                    activaed: progress[0] == 'true',
                     func: () => launchGame(
                       context,
                       Level(
@@ -44,6 +51,7 @@ class Levels extends StatelessWidget {
                   levels(
                     name: "Discover the Phyche",
                     title: "Level 2",
+                    activaed: progress[1] == 'true',
                     func: () => launchGame(
                       context,
                       Level(
@@ -57,31 +65,38 @@ class Levels extends StatelessWidget {
                   levels(
                     name: "Explore the Phyche's Secret",
                     title: "Level 3",
+                    activaed: progress[2] == 'true',
                     func: () => launchGame(
                       context,
                       Level(
                         "level3",
                         occurence: 0.8,
                         speed: 160,
-                        time: 100,
+                        time: 1,
                       ),
                     ),
                   ),
                   levels(
                     name: "Assemble The Phyche",
+                    activaed: progress[3] == 'true',
                     func: () {
-                      Navigator.of(context).push(
+                      Navigator.of(context)
+                          .push(
                         MaterialPageRoute(
                           builder: (_) => const AssemblePhycheGame(),
                         ),
-                      );
+                      )
+                          .then((value) {
+                        setState(() {});
+                      });
                     },
                   ),
                   levels(
                     name: "Endless Mode",
+                    activaed: progress[4] == 'true',
                     func: () => launchGame(
                       context,
-                      Level("Endless Mode",
+                      Level("endless",
                           occurence: 1, speed: 50, time: 0, isEndless: true),
                     ),
                   ),
@@ -199,6 +214,9 @@ class Levels extends StatelessWidget {
 
   void launchGame(BuildContext context, Level level) {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => LoadingScreen1(level: level)));
+        .push(MaterialPageRoute(builder: (_) => LoadingScreen1(level: level)))
+        .then((value) {
+      setState(() {});
+    });
   }
 }
