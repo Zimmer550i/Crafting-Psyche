@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mission_phyche_asteroid/pages/loading_screen_1.dart';
 import 'package:mission_phyche_asteroid/pages/splash.dart';
 
 void main() {

@@ -16,7 +16,7 @@ class Player extends SpriteAnimationComponent
 
   @override
   FutureOr<void> onLoad() async {
-    var spriteSheet;
+    SpriteSheet spriteSheet;
     if (gameRef.size.x > 420) {
       final image = await Flame.images.load('spaceship/ship1.png');
       spriteSheet = SpriteSheet(image: image, srcSize: Vector2(400, 400));

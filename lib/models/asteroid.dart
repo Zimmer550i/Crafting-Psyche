@@ -56,8 +56,8 @@ class Asteroid extends SpriteComponent with HasGameRef, CollisionCallbacks {
 
   @override
   set onCollisionCallback(
-      CollisionCallback<PositionComponent>? _onCollisionCallback) {
-    super.onCollisionCallback = _onCollisionCallback;
+      CollisionCallback<PositionComponent>? onCollisionCallback) {
+    super.onCollisionCallback = onCollisionCallback;
     gameRef.remove(this);
   }
 
