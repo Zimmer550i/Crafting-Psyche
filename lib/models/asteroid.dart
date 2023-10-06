@@ -10,25 +10,25 @@ class Asteroid extends SpriteComponent with HasGameRef, CollisionCallbacks {
   late CircleHitbox shape;
   bool isJunk;
 
-  Asteroid({this.velocity = 50, this.isJunk = false});
+  Asteroid({this.velocity = 100, this.isJunk = false});
 
   @override
   FutureOr<void> onLoad() async {
     _random = Random();
     sprite = isJunk
-        ? await Sprite.load('junks/junk${1}.png')
-        : await Sprite.load('asteroids/asteroid${1}.png');
+        ? await Sprite.load('junks/junk${_random.nextInt(4)+1}.png')
+        : await Sprite.load('asteroids/asteroid${_random.nextInt(4)+1}.png');
     anchor = Anchor.center;
+    size = Vector2.all(_random.nextInt(50) + 70.0);
+    angle = _random.nextDouble() * 3.1416;
+    x = _random.nextInt(gameRef.size.x.toInt()).toDouble();
+    y = _random.nextInt(50).toDouble() - 100.0;
+    // velocity += _random.nextInt(100).toDouble();
+    rotation =
+        _random.nextBool() ? _random.nextDouble() : -_random.nextDouble();
     shape = CircleHitbox.relative(0.8,
         parentSize: size, position: size / 2, anchor: Anchor.center);
     add(shape);
-    x = _random.nextInt(gameRef.size.x.toInt()).toDouble();
-    y = _random.nextInt(50).toDouble() - 100.0;
-    size = Vector2.all(_random.nextInt(50) + 70.0);
-    velocity += _random.nextInt(100).toDouble();
-    angle = _random.nextDouble() * 3.1416;
-    rotation =
-        _random.nextBool() ? _random.nextDouble() : -_random.nextDouble();
   }
 
   @override
@@ -49,7 +49,16 @@ class Asteroid extends SpriteComponent with HasGameRef, CollisionCallbacks {
     super.onCollisionStart(intersectionPoints, other);
     if (other is Player) {
       gameRef.remove(this);
+    } else {
+      gameRef.remove(this);
     }
+  }
+
+  @override
+  set onCollisionCallback(
+      CollisionCallback<PositionComponent>? _onCollisionCallback) {
+    super.onCollisionCallback = _onCollisionCallback;
+    gameRef.remove(this);
   }
 
   void changeSprite() async {

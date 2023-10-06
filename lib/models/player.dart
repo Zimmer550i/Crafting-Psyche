@@ -16,8 +16,14 @@ class Player extends SpriteAnimationComponent
 
   @override
   FutureOr<void> onLoad() async {
-    final image = await Flame.images.load('ship.png');
-    final spriteSheet = SpriteSheet(image: image, srcSize: Vector2(200, 200));
+    var spriteSheet;
+    if (gameRef.size.x > 420) {
+      final image = await Flame.images.load('spaceship/ship1.png');
+      spriteSheet = SpriteSheet(image: image, srcSize: Vector2(400, 400));
+    } else {
+      final image = await Flame.images.load('ship.png');
+      spriteSheet = SpriteSheet(image: image, srcSize: Vector2(200, 200));
+    }
     final animationComponent =
         spriteSheet.createAnimation(row: 0, stepTime: 0.05);
     animation = animationComponent;
@@ -33,7 +39,7 @@ class Player extends SpriteAnimationComponent
     super.update(dt);
 
     if (angle != 0) {
-      x += angle;
+      x += angle * 2;
     }
     if (x < 1 && angle < 0) {
       x = 0;

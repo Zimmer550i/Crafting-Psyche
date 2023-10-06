@@ -33,10 +33,10 @@ class Buttons extends StatelessWidget {
             height: size * 15,
             width: size * 15 * widthMultiplyer,
             padding: EdgeInsets.only(
-              top: size,
-              bottom: size * 2,
-              left: size,
-              right: size,
+              top: size*0.6,
+              bottom: size * 1.5,
+              left: size*0.6,
+              right: size*0.6,
             ),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -70,7 +70,7 @@ class Buttons extends StatelessWidget {
                     text,
                     style: const TextStyle(
                       fontFamily: "Arbutus",
-                      fontSize: 999,
+                      fontSize: 20,
                       color: Colors.white,
                     ),
                   ),

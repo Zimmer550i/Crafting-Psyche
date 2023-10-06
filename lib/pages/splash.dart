@@ -34,7 +34,7 @@ class Splash extends StatelessWidget {
             ),
             Positioned(
               width: w / 1.5,
-              height: h / 3,
+              height: h / 4,
               right: -30,
               top: 50,
               child: Transform.rotate(
@@ -60,7 +60,7 @@ class Splash extends StatelessWidget {
               child: Image.asset("assets/images/text_logo.png"),
             ),
             Positioned(
-              right: 90,
+              right: w/3,
               bottom: 200,
               child: Image.asset("assets/images/astronaut_1.png")
                   .animate(
@@ -88,7 +88,7 @@ class Splash extends StatelessWidget {
               left: 0,
               right: 0,
               child: Text(
-                "Tap on screen",
+                "Tap on Play",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: "Arbutus",

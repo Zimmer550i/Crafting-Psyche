@@ -1,8 +1,7 @@
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:mission_phyche_asteroid/models/level.dart';
 import 'package:mission_phyche_asteroid/pages/assemble_phyche_game.dart';
-import 'package:mission_phyche_asteroid/pages/space_game.dart';
+import 'package:mission_phyche_asteroid/pages/loading_screen_1.dart';
 import 'package:mission_phyche_asteroid/widgets/buttons.dart';
 
 class Levels extends StatelessWidget {
@@ -31,13 +30,13 @@ class Levels extends StatelessWidget {
                   levels(
                     name: "Road to Mars",
                     title: "Level 1",
-                    func: () => launchSpaceGame(
+                    func: () => launchGame(
                       context,
                       Level(
                         "level1",
-                        occurence: 2,
-                        speed: 50,
-                        time: 100,
+                        occurence: 1.2,
+                        speed: 100,
+                        time: 50,
                         isJunk: true,
                       ),
                     ),
@@ -45,12 +44,12 @@ class Levels extends StatelessWidget {
                   levels(
                     name: "Discover the Phyche",
                     title: "Level 2",
-                    func: () => launchSpaceGame(
+                    func: () => launchGame(
                       context,
                       Level(
                         "level2",
                         occurence: 1,
-                        speed: 60,
+                        speed: 120,
                         time: 100,
                       ),
                     ),
@@ -58,12 +57,12 @@ class Levels extends StatelessWidget {
                   levels(
                     name: "Explore the Phyche's Secret",
                     title: "Level 3",
-                    func: () => launchSpaceGame(
+                    func: () => launchGame(
                       context,
                       Level(
                         "level3",
                         occurence: 0.8,
-                        speed: 80,
+                        speed: 160,
                         time: 100,
                       ),
                     ),
@@ -80,9 +79,10 @@ class Levels extends StatelessWidget {
                   ),
                   levels(
                     name: "Endless Mode",
-                    func: () => launchSpaceGame(
+                    func: () => launchGame(
                       context,
-                      Level("Endless Mode", occurence: 1, speed: 50, time: 0, isEndless: true),
+                      Level("Endless Mode",
+                          occurence: 1, speed: 50, time: 0, isEndless: true),
                     ),
                   ),
                   const SizedBox(height: 80),
@@ -197,50 +197,8 @@ class Levels extends StatelessWidget {
     );
   }
 
-  launchSpaceGame(BuildContext context, Level level) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => GameWidget(
-          overlayBuilderMap: {
-            "pause": (BuildContext context, SpaceGame game) {
-              game.pauseEngine();
-              return Center(
-                child: DefaultTextStyle(
-                  style: const TextStyle(
-                    fontFamily: "Arbutus",
-                    fontSize: 35,
-                    color: Color(0xffF7DE00),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Paused"),
-                      const SizedBox(height: 20),
-                      Buttons(
-                        text: "Unpause",
-                        widthMultiplyer: 2,
-                        func: () {
-                          game.overlays.remove('pause');
-                          game.resumeEngine();
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      Buttons(
-                        text: "Go Back",
-                        widthMultiplyer: 2,
-                        func: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-          },
-          game: SpaceGame(level: level),
-        ),
-      ),
-    );
+  void launchGame(BuildContext context, Level level) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => LoadingScreen1(level: level)));
   }
 }
